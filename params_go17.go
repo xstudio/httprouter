@@ -19,11 +19,12 @@ var ParamsKey = paramsKey{}
 // request context under ParamsKey.
 func (r *Router) Handler(method, path string, handler http.Handler) {
 	r.Handle(method, path,
-		func(w http.ResponseWriter, req *http.Request, p Params) {
+		func(w http.ResponseWriter, req *http.Request, p Params) error {
 			ctx := req.Context()
 			ctx = context.WithValue(ctx, ParamsKey, p)
 			req = req.WithContext(ctx)
 			handler.ServeHTTP(w, req)
+			return nil
 		},
 	)
 }
