@@ -83,7 +83,7 @@ import (
 // Handle is a function that can be registered to a route to handle HTTP
 // requests. Like http.HandlerFunc, but has a third parameter for the values of
 // wildcards (variables).
-type Handle func(http.ResponseWriter, *http.Request, Params)
+type Handle func(http.ResponseWriter, *http.Request, Params) error
 
 // Param is a single URL parameter, consisting of a key and a value.
 type Param struct {
@@ -259,9 +259,10 @@ func (r *Router) ServeFiles(path string, root http.FileSystem) {
 
 	fileServer := http.FileServer(root)
 
-	r.GET(path, func(w http.ResponseWriter, req *http.Request, ps Params) {
+	r.GET(path, func(w http.ResponseWriter, req *http.Request, ps Params) error {
 		req.URL.Path = ps.ByName("filepath")
 		fileServer.ServeHTTP(w, req)
+		return nil
 	})
 }
 
